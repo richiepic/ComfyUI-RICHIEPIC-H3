@@ -166,7 +166,7 @@ class H3ReferenceGallery:
     RETURN_TYPES = ("H3_REF_LIST", "AUDIO", "INT", "STRING")
     RETURN_NAMES = ("refs", "audio", "count", "summary")
     FUNCTION = "load"
-    CATEGORY = "MiniMax-H3/gallery"
+    CATEGORY = "RICHIEPIC/H3 RefMod"
     DESCRIPTION = ("Gallery of reference photos/videos/audio. Connect refs to refs_bundle and audio to audio "
                    "of Create H3 RefMod Master.")
 
@@ -216,5 +216,5 @@ class H3ReferenceGallery:
         return (refs or None, audio, len(refs), summary)
 
 
-NODE_CLASS_MAPPINGS = {"H3ReferenceGallery": H3ReferenceGallery}
-NODE_DISPLAY_NAME_MAPPINGS = {"H3ReferenceGallery": "H3 Reference Gallery (Photos / Video / Audio)"}
+NODE_CLASS_MAPPINGS = {"RICHIEPIC_H3ReferenceGallery": H3ReferenceGallery}
+NODE_DISPLAY_NAME_MAPPINGS = {"RICHIEPIC_H3ReferenceGallery": "H3 Reference Gallery (Photos / Video / Audio)"}

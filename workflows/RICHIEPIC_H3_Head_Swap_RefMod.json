@@ -7336,7 +7336,7 @@
     },
     {
       "id": 869,
-      "type": "MiniMaxH3RefModsLoader",
+      "type": "RICHIEPIC_H3RefModsLoader",
       "pos": [
         -3830,
         660
@@ -7364,9 +7364,9 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui_fearnworksnodes",
-        "ver": "0.1.2",
-        "Node name for S&R": "MiniMaxH3RefModsLoader",
+        "cnr_id": "comfyui-richiepic-h3",
+        "ver": "0.2.0",
+        "Node name for S&R": "RICHIEPIC_H3RefModsLoader",
         "refmod_visible_slots": [
           1
         ],
@@ -7507,7 +7507,7 @@
     },
     {
       "id": 871,
-      "type": "MiniMaxH3RefModTextEncode",
+      "type": "RICHIEPIC_H3RefModTextEncode",
       "pos": [
         -3500,
         640
@@ -7552,9 +7552,9 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui_fearnworksnodes",
-        "ver": "0.1.2",
-        "Node name for S&R": "MiniMaxH3RefModTextEncode",
+        "cnr_id": "comfyui-richiepic-h3",
+        "ver": "0.2.0",
+        "Node name for S&R": "RICHIEPIC_H3RefModTextEncode",
         "ue_properties": {
           "widget_ue_connectable": {},
           "input_ue_unconnectable": {},
@@ -7735,8 +7735,6 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui_fearnworksnodes",
-        "ver": "0.1.2",
         "Node name for S&R": "easy showAnything",
         "ue_properties": {
           "widget_ue_connectable": {},
@@ -8925,8 +8923,6 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui_fearnworksnodes",
-        "ver": "0.1.2",
         "ue_properties": {
           "version": "8.0.1",
           "widget_ue_connectable": {},

@@ -6,7 +6,7 @@
   "nodes": [
     {
       "id": 12,
-      "type": "MiniMaxH3RefModMasterExtract",
+      "type": "RICHIEPIC_H3RefModMasterExtract",
       "pos": [
         -1290,
         20
@@ -87,9 +87,9 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui_fearnworksnodes",
-        "ver": "0.1.2",
-        "Node name for S&R": "MiniMaxH3RefModMasterExtract",
+        "cnr_id": "comfyui-richiepic-h3",
+        "ver": "0.2.0",
+        "Node name for S&R": "RICHIEPIC_H3RefModMasterExtract",
         "ue_properties": {
           "widget_ue_connectable": {},
           "input_ue_unconnectable": {},
@@ -151,7 +151,7 @@
     },
     {
       "id": 16,
-      "type": "H3ReferenceGallery",
+      "type": "RICHIEPIC_H3ReferenceGallery",
       "pos": [
         -2030,
         50
@@ -191,9 +191,9 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui_fearnworksnodes",
-        "ver": "0.1.2",
-        "Node name for S&R": "H3ReferenceGallery",
+        "cnr_id": "comfyui-richiepic-h3",
+        "ver": "0.2.0",
+        "Node name for S&R": "RICHIEPIC_H3ReferenceGallery",
         "ue_properties": {
           "widget_ue_connectable": {},
           "input_ue_unconnectable": {},

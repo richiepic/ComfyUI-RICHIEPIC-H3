@@ -1,7 +1,7 @@
 import { app } from "../../scripts/app.js";
 import { api } from "../../scripts/api.js";
 
-const NODE = "H3ReferenceGallery";
+const NODE = "RICHIEPIC_H3ReferenceGallery";
 const SUBFOLDER = "refgallery";
 const KIND = (name) => {
   const ext = name.split(".").pop().toLowerCase();
@@ -268,7 +268,7 @@ function setupNode(node) {
 }
 
 app.registerExtension({
-  name: "h3.reference.gallery",
+  name: "RICHIEPIC.H3.ReferenceGallery",
   async beforeRegisterNodeDef(nodeType, nodeData) {
     if (nodeData.name !== NODE) return;
     const created = nodeType.prototype.onNodeCreated;
