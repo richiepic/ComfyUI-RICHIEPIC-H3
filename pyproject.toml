@@ -1,0 +1,16 @@
+[project]
+name = "comfyui-richiepic-h3"
+description = "RICHIEPIC MiniMax H3 tools for ComfyUI: a reference gallery (photos / video / audio) for building RefMods, and head swap example workflows."
+version = "0.1.0"
+license = { file = "LICENSE" }
+readme = "README.md"
+# PIL, numpy, torch and PyAV already ship with ComfyUI; nothing extra is installed.
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/richiepic/ComfyUI-RICHIEPIC-H3"
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "RICHIEPIC H3"
+Icon = ""
