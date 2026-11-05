@@ -1,153 +1,9 @@
 {
   "id": "7b60d18f-0c1f-43fb-bf07-ad82dbca0594",
   "revision": 0,
-  "last_node_id": 19,
-  "last_link_id": 15,
+  "last_node_id": 22,
+  "last_link_id": 20,
   "nodes": [
-    {
-      "id": 12,
-      "type": "MiniMaxH3RefModMasterExtract",
-      "pos": [
-        -1290,
-        20
-      ],
-      "size": [
-        400,
-        800
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "refs_image.ref_image_0",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "refs_video.ref_video_0",
-          "shape": 7,
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "refs_bundle",
-          "shape": 7,
-          "type": "H3_REF_LIST",
-          "link": 13
-        },
-        {
-          "name": "mask",
-          "shape": 7,
-          "type": "MASK",
-          "link": null
-        },
-        {
-          "name": "av_encoder",
-          "shape": 7,
-          "type": "MINIMAX_H3_AV_ENCODER",
-          "link": null
-        },
-        {
-          "name": "vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 11
-        },
-        {
-          "name": "mask_list",
-          "shape": 7,
-          "type": "H3_MASK_LIST",
-          "link": null
-        },
-        {
-          "name": "audio",
-          "shape": 7,
-          "type": "AUDIO",
-          "link": 14
-        },
-        {
-          "name": "audio_vae",
-          "shape": 7,
-          "type": "VAE",
-          "link": 12
-        }
-      ],
-      "outputs": [
-        {
-          "name": "mods",
-          "type": "H3_REF_MODS",
-          "links": null
-        },
-        {
-          "name": "details",
-          "type": "STRING",
-          "links": null
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "MiniMaxH3RefModMasterExtract",
-        "ue_properties": {
-          "widget_ue_connectable": {},
-          "input_ue_unconnectable": {},
-          "version": "8.0"
-        },
-        "aux_id": "Luisacaotica/ComfyUI-MiniMaxH3Mod"
-      },
-      "widgets_values": [
-        "my_identity_refmod",
-        "Full Reference",
-        "identity",
-        0,
-        512,
-        64,
-        64,
-        16,
-        500,
-        false,
-        false,
-        1,
-        14848,
-        "",
-        true,
-        30,
-        5000,
-        "error",
-        "voice",
-        15000,
-        "manual",
-        "",
-        "error",
-        "bundle"
-      ],
-      "widgets_values_named": {
-        "name": "my_identity_refmod",
-        "mode": "Full Reference",
-        "concept_type": "identity",
-        "background_retention": 0,
-        "ref_resolution": 512,
-        "pool_h": 64,
-        "pool_w": 64,
-        "latent_frames": 16,
-        "identity": 500,
-        "merge": false,
-        "motion_only": false,
-        "multiplier": 1,
-        "max_tokens": 14848,
-        "description": "",
-        "save": true,
-        "audio_max_seconds": 30,
-        "audio_max_tokens": 5000,
-        "audio_budget_policy": "error",
-        "audio_concept_type": "voice",
-        "max_total_tokens": 15000,
-        "extraction_preset": "manual",
-        "subfolder": "",
-        "budget_policy": "error",
-        "save_layout": "bundle"
-      }
-    },
     {
       "id": 16,
       "type": "RICHIEPIC_H3ReferenceGallery",
@@ -162,20 +18,39 @@
       "flags": {},
       "order": 0,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "external_images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "external_image_sequence",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "external_video_with_audio",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        }
+      ],
       "outputs": [
         {
           "name": "refs",
           "type": "H3_REF_LIST",
           "links": [
-            13
+            17
           ]
         },
         {
           "name": "audio",
           "type": "AUDIO",
           "links": [
-            14
+            18
           ]
         },
         {
@@ -190,9 +65,9 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui-richiepic-h3",
-        "ver": "0.3.0",
         "Node name for S&R": "RICHIEPIC_H3ReferenceGallery",
+        "cnr_id": "comfyui-richiepic-h3",
+        "ver": "0.3.1",
         "ue_properties": {
           "widget_ue_connectable": {},
           "input_ue_unconnectable": {},
@@ -238,7 +113,7 @@
           "name": "VAE",
           "type": "VAE",
           "links": [
-            12
+            19
           ]
         }
       ],
@@ -280,7 +155,7 @@
           "name": "VAE",
           "type": "VAE",
           "links": [
-            11
+            20
           ]
         }
       ],
@@ -301,55 +176,213 @@
       "widgets_values_named": {
         "vae_name": "minimax\\minimax_h3_video_vae_fp16.safetensors"
       }
+    },
+    {
+      "id": 21,
+      "type": "MiniMaxH3RefModMasterExtract",
+      "pos": [
+        -1330,
+        50
+      ],
+      "size": [
+        400,
+        800
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "refs_image.ref_image_0",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "refs_video.ref_video_0",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "refs_bundle",
+          "shape": 7,
+          "type": "H3_REF_LIST",
+          "link": 17
+        },
+        {
+          "name": "mask",
+          "shape": 7,
+          "type": "MASK",
+          "link": null
+        },
+        {
+          "name": "av_encoder",
+          "shape": 7,
+          "type": "MINIMAX_H3_AV_ENCODER",
+          "link": null
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 20
+        },
+        {
+          "name": "mask_list",
+          "shape": 7,
+          "type": "H3_MASK_LIST",
+          "link": null
+        },
+        {
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 18
+        },
+        {
+          "name": "audio_vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mods",
+          "type": "H3_REF_MODS",
+          "links": null
+        },
+        {
+          "name": "details",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "ComfyUI-MiniMaxH3Mod",
+        "ver": "517e8c419a8584fbf69fceb487bc39d83e6a6ec8",
+        "ue_properties": {
+          "version": "8.0.1",
+          "widget_ue_connectable": {},
+          "input_ue_unconnectable": {},
+          "title_regex": null,
+          "input_regex": null,
+          "group_regex": null,
+          "title_regex_invert": false,
+          "input_regex_invert": false,
+          "group_regex_invert": false,
+          "apply_to_unrepeated": 0,
+          "send_to_any": 0,
+          "string_to_combo": 0,
+          "repeated_type_rule": 0,
+          "group_restricted": 0,
+          "color_restricted": 0
+        },
+        "Node name for S&R": "MiniMaxH3RefModMasterExtract",
+        "aux_id": "Luisacaotica/ComfyUI-MiniMaxH3Mod"
+      },
+      "widgets_values": [
+        "name_of_your_character",
+        "Full Reference",
+        "identity",
+        0,
+        512,
+        64,
+        64,
+        16,
+        500,
+        false,
+        false,
+        1,
+        5120,
+        "",
+        true,
+        30,
+        5120,
+        "error",
+        "voice",
+        0,
+        "manual",
+        "",
+        "error",
+        "bundle"
+      ],
+      "widgets_values_named": {
+        "name": "name_of_your_character",
+        "mode": "Full Reference",
+        "concept_type": "identity",
+        "background_retention": 0,
+        "ref_resolution": 512,
+        "pool_h": 64,
+        "pool_w": 64,
+        "latent_frames": 16,
+        "identity": 500,
+        "merge": false,
+        "motion_only": false,
+        "multiplier": 1,
+        "max_tokens": 5120,
+        "description": "",
+        "save": true,
+        "audio_max_seconds": 30,
+        "audio_max_tokens": 5120,
+        "audio_budget_policy": "error",
+        "audio_concept_type": "voice",
+        "max_total_tokens": 0,
+        "extraction_preset": "manual",
+        "subfolder": "",
+        "budget_policy": "error",
+        "save_layout": "bundle"
+      }
     }
   ],
   "links": [
     [
-      11,
-      18,
-      0,
-      12,
-      5,
-      "VAE"
-    ],
-    [
-      12,
       17,
-      0,
-      12,
-      8,
-      "VAE"
-    ],
-    [
-      13,
       16,
       0,
-      12,
+      21,
       2,
       "H3_REF_LIST"
     ],
     [
-      14,
+      18,
       16,
       1,
-      12,
+      21,
       7,
       "AUDIO"
+    ],
+    [
+      19,
+      17,
+      0,
+      21,
+      8,
+      "VAE"
+    ],
+    [
+      20,
+      18,
+      0,
+      21,
+      5,
+      "VAE"
     ]
   ],
   "groups": [],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.880000000000001,
+      "scale": 0.9326010638297877,
       "offset": [
-        2984.5681316984237,
-        323.24756653280787
+        2799.1988190111488,
+        285.54087121815587
       ]
     },
+    "frontendVersion": "1.57.1",
     "ue_links": [],
     "links_added_by_ue": [],
-    "frontendVersion": "1.57.1",
     "VHS_latentpreview": false,
     "VHS_latentpreviewrate": 0,
     "VHS_MetadataImage": true,

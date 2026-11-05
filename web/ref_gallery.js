@@ -13,13 +13,13 @@ const KIND = (name) => {
 const COLORS = { image: "#4a9eff", video: "#ff6b6b", audio: "#c792ea" };
 
 const CSS = `
-.h3g{display:flex;flex-direction:column;gap:6px;font:12px sans-serif;color:#ddd;height:100%;box-sizing:border-box}
-.h3g-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.h3g{display:flex;flex-direction:column;gap:6px;font:12px sans-serif;color:#ddd;height:100%;width:100%;min-height:0;overflow:hidden;box-sizing:border-box}
+.h3g-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex:0 0 auto}
 .h3g-bar button{background:#2b2f36;color:#ddd;border:1px solid #444;border-radius:6px;padding:4px 10px;cursor:pointer}
 .h3g-bar button:hover{background:#363b44}
 .h3g-count{opacity:.7;margin-left:auto}
-.h3g-grid{flex:1;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;
-  grid-auto-rows:max-content;border:1px dashed #555;border-radius:8px;padding:6px;min-height:80px;align-content:start}
+.h3g-grid{flex:1 1 0;min-height:0;overflow-y:auto;overflow-x:hidden;box-sizing:border-box;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;
+  grid-auto-rows:max-content;border:1px dashed #555;border-radius:8px;padding:6px;align-content:start}
 .h3g-grid.drag{border-color:#4a9eff;background:rgba(74,158,255,.08)}
 .h3g-empty{grid-column:1/-1;text-align:center;opacity:.5;padding:20px}
 .h3g-card{position:relative;border:2px solid #444;border-radius:8px;background:#1d2026;overflow:hidden;cursor:grab;
@@ -264,7 +264,13 @@ function setupNode(node) {
     count.textContent = `${n.image} images | ${n.video} videos | ${n.audio} audio (external inputs follow)`;
   }
 
-  node.addDOMWidget("references", "h3_gallery", root, { serialize: false, hideOnZoom: false });
+  // The widget fills the space left under the regular widgets; the grid scrolls inside it.
+  // getMinHeight keeps the node from being resized so small that the gallery collapses.
+  node.addDOMWidget("references", "h3_gallery", root, {
+    serialize: false,
+    hideOnZoom: false,
+    getMinHeight: () => 260,
+  });
   node.h3GalleryRender = render;
   render();
   const [w, h] = node.size;

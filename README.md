@@ -28,11 +28,11 @@ Tested together on ComfyUI 0.42.0 (`7cebca5`), frontend 1.57.1, Windows 11, RTX 
 | Pack | Repository | Tested version | Used by | Nodes used |
 | --- | --- | --- | --- | --- |
 | ComfyUI-MiniMaxH3Mod | https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod | 0.2.7, `517e8c4` | Builder, Head Swap | `MiniMaxH3RefModMasterExtract`, `MiniMaxH3RefModsLoader`, `MiniMaxH3RefModTextEncode` |
-| ComfyUI-KJNodes | https://github.com/kijai/ComfyUI-KJNodes | 1.5.3, `ab72eda` | Head Swap | `SetNode`, `GetNode`, `ImageResizeKJv2`, `ImageConcatMulti`, `AddLabel`, `SomethingToString`, `ModelPreviewOverrideKJ` |
-| ComfyUI-VideoHelperSuite | https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite | 1.7.9, `4d907be` | Head Swap | `VHS_LoadVideoFFmpeg`, `VHS_VideoInfo`, `VHS_VideoCombine` |
+| ComfyUI-KJNodes | https://github.com/kijai/ComfyUI-KJNodes | 1.5.3, `ab72eda` | Head Swap | `SetNode`, `GetNode`, `ImageResizeKJv2`, `ColorMatchV2`, `ModelPreviewOverrideKJ`; comparison group: `ImageConcatMulti`, `AddLabel`, `SomethingToString` |
+| ComfyUI-VideoHelperSuite | https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite | 1.7.9, `4d907be` | Head Swap | `VHS_LoadVideoFFmpeg`, `VHS_VideoInfo` |
 | Comfyui_Minimax_h3_latent_Upscaler | https://github.com/LBH-123-AI/Comfyui_Minimax_h3_latent_Upscaler | `40316cf` | Head Swap (second pass) | `MinimaxH3LatentUpscaler3D` |
 | ComfyUI-Easy-Use | https://github.com/yolain/ComfyUI-Easy-Use | 1.4.1 (registry install) | Head Swap | `easy showAnything` |
-| WAS Node Suite | https://github.com/ltdrdata/was-node-suite-comfyui | 3.0.1 (registry install) | Head Swap | `Text Multiline` |
+| ComfyUI-Pixaroma | https://github.com/pixaroma/ComfyUI-Pixaroma | 1.4.248 (registry install) | Head Swap | `PixaromaGroupSwitch` (comparison group on / off) |
 
 The gallery node itself needs none of these. Its outputs match the upstream input types:
 `refs` (`H3_REF_LIST`) → `refs_bundle` and `audio` (`AUDIO`) → `audio` of **Create H3 RefMod Master**.
@@ -124,15 +124,20 @@ Gallery → **Create H3 RefMod Master** (video VAE + audio VAE). Notes from test
 ### `workflows/RICHIEPIC_H3_Head_Swap_RefMod.json`
 
 Character Swap v1.1 native graph with the **Head Swap v1.0** LoRA. The RefMod is loaded with **Load H3 RefMods**
-and presented with **H3 RefMod Text Encode** (prompt: `<Picture 1>`). Set `my_identity_refmod` to your file and
-`your_guide_video.mp4` to your clip.
+and presented with **H3 RefMod Text Encode**. Set `my_identity_refmod` to your file and `your_guide_video.mp4` to
+your clip.
 
 - Frame handling: the guide video is loaded at the `FPS` value (24) and capped at
   `max(5, round(Duration * 24))` rounded up to H3's `17k+5` grid. Set `Duration` so the loaded frame count
   lands on the grid (for example 5.875 s = 141 frames, 8.708 s = 209 frames); Add Guide crops longer clips down
   to the grid.
+- The prompt is empty: the head swap LoRA and the RefMod do the work. `<Picture 1>` can be added; the RefMod's
+  label is in the `reference_map` output of H3 RefMod Text Encode.
 - Use the **head swap** LoRA. The character swap LoRA replaces the whole figure.
-- The RefMod label is in the `reference_map` output of H3 RefMod Text Encode.
+- Results are colour matched to the guide (`ColorMatchV2`, `hm-mkl-hm`) and saved with core **Create Video** /
+  **Save Video** (24 fps, 10-bit, H.264) as `video/character_swap_first_pass` and
+  `video/character_swap_final_pass`.
+- The side-by-side comparison group is bypassed by default; turn it on with the **Comparison ON / OFF** switch.
 
 ## License
 
