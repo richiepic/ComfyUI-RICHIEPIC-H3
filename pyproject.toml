@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-richiepic-h3"
-description = "RICHIEPIC MiniMax H3 RefMod tools for ComfyUI: reference gallery, RefMod create / load / apply nodes (vendored from ComfyUI-MiniMaxH3Mod, MIT) and head swap example workflows."
-version = "0.2.0"
+description = "RICHIEPIC H3 Reference Gallery for ComfyUI: gallery files plus external IMAGE, image-sequence and VIDEO inputs in one ordered list for the ComfyUI-MiniMaxH3Mod RefMod builder, with example workflows."
+version = "0.3.0"
 license = { file = "LICENSE" }
 readme = "README.md"
 # PIL, numpy, torch and PyAV already ship with ComfyUI; nothing extra is installed.

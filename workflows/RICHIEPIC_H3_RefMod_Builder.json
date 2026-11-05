@@ -6,7 +6,7 @@
   "nodes": [
     {
       "id": 12,
-      "type": "RICHIEPIC_H3RefModMasterExtract",
+      "type": "MiniMaxH3RefModMasterExtract",
       "pos": [
         -1290,
         20
@@ -87,14 +87,13 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui-richiepic-h3",
-        "ver": "0.2.0",
-        "Node name for S&R": "RICHIEPIC_H3RefModMasterExtract",
+        "Node name for S&R": "MiniMaxH3RefModMasterExtract",
         "ue_properties": {
           "widget_ue_connectable": {},
           "input_ue_unconnectable": {},
           "version": "8.0"
-        }
+        },
+        "aux_id": "Luisacaotica/ComfyUI-MiniMaxH3Mod"
       },
       "widgets_values": [
         "my_identity_refmod",
@@ -192,7 +191,7 @@
       ],
       "properties": {
         "cnr_id": "comfyui-richiepic-h3",
-        "ver": "0.2.0",
+        "ver": "0.3.0",
         "Node name for S&R": "RICHIEPIC_H3ReferenceGallery",
         "ue_properties": {
           "widget_ue_connectable": {},

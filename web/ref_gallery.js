@@ -153,6 +153,7 @@ function setupNode(node) {
     const items = read();
     grid.replaceChildren();
     const n = { image: 0, video: 0, audio: 0 };
+    let refIndex = 0; // reference position (#N) shared by images and videos, as in the node summary
     if (!items.length) {
       const empty = document.createElement("div");
       empty.className = "h3g-empty";
@@ -161,7 +162,10 @@ function setupNode(node) {
     }
     items.forEach((item, i) => {
       const kind = item.kind || KIND(item.name);
-      if (item.enabled !== false) n[kind] += 1;
+      if (item.enabled !== false) {
+        n[kind] += 1;
+        if (kind !== "audio") refIndex += 1;
+      }
       const card = document.createElement("div");
       card.className = "h3g-card" + (item.enabled === false ? " off" : "");
       card.style.borderColor = COLORS[kind];
@@ -204,7 +208,7 @@ function setupNode(node) {
       const tag = document.createElement("div");
       tag.className = "h3g-tag";
       tag.style.color = COLORS[kind];
-      tag.textContent = item.enabled === false ? `${kind} (off)` : `${kind}${n[kind]}`;
+      tag.textContent = item.enabled === false ? `${kind} (off)` : kind === "audio" ? "audio" : `#${refIndex} ${kind}`;
       const name = document.createElement("div");
       name.className = "h3g-name";
       name.textContent = item.name;
@@ -257,7 +261,7 @@ function setupNode(node) {
       card.append(thumb, x, on, meta);
       grid.appendChild(card);
     });
-    count.textContent = `${n.image} images | ${n.video} videos | ${n.audio} audio`;
+    count.textContent = `${n.image} images | ${n.video} videos | ${n.audio} audio (external inputs follow)`;
   }
 
   node.addDOMWidget("references", "h3_gallery", root, { serialize: false, hideOnZoom: false });

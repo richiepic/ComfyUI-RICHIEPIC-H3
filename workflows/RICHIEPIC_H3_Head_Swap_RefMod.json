@@ -7336,7 +7336,7 @@
     },
     {
       "id": 869,
-      "type": "RICHIEPIC_H3RefModsLoader",
+      "type": "MiniMaxH3RefModsLoader",
       "pos": [
         -3830,
         660
@@ -7364,9 +7364,7 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui-richiepic-h3",
-        "ver": "0.2.0",
-        "Node name for S&R": "RICHIEPIC_H3RefModsLoader",
+        "Node name for S&R": "MiniMaxH3RefModsLoader",
         "refmod_visible_slots": [
           1
         ],
@@ -7374,7 +7372,8 @@
           "widget_ue_connectable": {},
           "input_ue_unconnectable": {},
           "version": "8.0"
-        }
+        },
+        "aux_id": "Luisacaotica/ComfyUI-MiniMaxH3Mod"
       },
       "widgets_values": [
         false,
@@ -7507,7 +7506,7 @@
     },
     {
       "id": 871,
-      "type": "RICHIEPIC_H3RefModTextEncode",
+      "type": "MiniMaxH3RefModTextEncode",
       "pos": [
         -3500,
         640
@@ -7552,14 +7551,13 @@
         }
       ],
       "properties": {
-        "cnr_id": "comfyui-richiepic-h3",
-        "ver": "0.2.0",
-        "Node name for S&R": "RICHIEPIC_H3RefModTextEncode",
+        "Node name for S&R": "MiniMaxH3RefModTextEncode",
         "ue_properties": {
           "widget_ue_connectable": {},
           "input_ue_unconnectable": {},
           "version": "8.0"
-        }
+        },
+        "aux_id": "Luisacaotica/ComfyUI-MiniMaxH3Mod"
       },
       "widgets_values": [
         "<Picture 1>",

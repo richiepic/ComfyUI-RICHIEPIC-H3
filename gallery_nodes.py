@@ -3,8 +3,13 @@
 Outputs plug straight into ComfyUI-MiniMaxH3Mod's "Create H3 RefMod Master":
   refs  (H3_REF_LIST) -> refs_bundle
   audio (AUDIO)       -> audio
-No dependency on FoleyExtension or on MiniMaxH3Mod itself. Uses PIL, numpy,
-torch and PyAV, which ship with ComfyUI.
+Optional external inputs (IMAGE, IMAGE sequence, VIDEO) join the same ordered
+reference list without touching disk. No import of MiniMaxH3Mod; uses PIL,
+numpy, torch and PyAV, which ship with ComfyUI.
+
+Reference order: gallery cards (card order), then external_images (one still per
+batch item, batch order), then external_image_sequence (one multi-frame
+reference), then external_video_with_audio (one multi-frame reference).
 """
 
 from __future__ import annotations
@@ -141,6 +146,27 @@ def load_audio(path, start, seconds):
     return {"waveform": torch.from_numpy(np.ascontiguousarray(wave))[None], "sample_rate": int(rate)}
 
 
+def check_frames(t, label):
+    """External IMAGE tensors are passed through unchanged; only reject what the H3 VAE cannot take."""
+    if t is None:
+        return None
+    if t.ndim == 3:
+        t = t[None]  # a single [H,W,C] image
+    if t.ndim != 4 or t.shape[0] == 0:
+        raise ValueError(f"H3 Reference Gallery: {label} must be an IMAGE [frames, height, width, channels], "
+                         f"got {tuple(t.shape)}.")
+    if t.shape[-1] != 3:
+        raise ValueError(f"H3 Reference Gallery: {label} has {t.shape[-1]} channels; MiniMax H3 needs RGB. "
+                         "Convert upstream (for example core 'Split Image with Alpha').")
+    return t
+
+
+def range_note(t):
+    """Values outside 0..1 (linear / HDR EXR) are not clamped here; flag them in the summary."""
+    lo, hi = float(t.min()), float(t.max())
+    return f"  (values {lo:.3g}..{hi:.3g} outside 0..1: convert to display-referred upstream)" if lo < 0 or hi > 1 else ""
+
+
 class H3ReferenceGallery:
     """Drag & drop photos, videos and audio; outputs a ref list and one audio track."""
 
@@ -159,7 +185,19 @@ class H3ReferenceGallery:
                 "video_seconds": ("FLOAT", {"default": 15.0, "min": 0.0, "max": 3600.0, "step": 0.5,
                     "tooltip": "Seconds used from every video. 0 = whole clip (per-card trim overrides it)."}),
                 "audio_source": (["none", "first audio file", "first video soundtrack", "auto"], {"default": "auto",
-                    "tooltip": "auto = first audio file, else the first video's soundtrack."}),
+                    "tooltip": "auto = first audio card, else the first video soundtrack in reference order "
+                               "(gallery videos before external_video_with_audio)."}),
+            },
+            "optional": {
+                "external_images": ("IMAGE", {
+                    "tooltip": "Stills from upstream nodes. A batch becomes one still reference per item, in batch "
+                               "order, after the gallery cards. Passed through unchanged (no resize, no re-encode)."}),
+                "external_image_sequence": ("IMAGE", {
+                    "tooltip": "Frames of one clip (EXR / PNG / DPX sequence loader, etc.). Becomes one multi-frame "
+                               "reference in frame order. Passed through unchanged; max_frames and trim do not apply."}),
+                "external_video_with_audio": ("VIDEO", {
+                    "tooltip": "A ComfyUI VIDEO (for example core Load Video / Video Trim). Becomes one multi-frame "
+                               "reference; its soundtrack can feed the audio output."}),
             },
         }
 
@@ -172,7 +210,10 @@ class H3ReferenceGallery:
 
     @classmethod
     def IS_CHANGED(cls, gallery, **kwargs):
-        h = hashlib.sha256((gallery or "").encode() + json.dumps(kwargs, sort_keys=True).encode())
+        # Only widget values and the gallery files are hashed here; linked inputs (tensors, VIDEO)
+        # are tracked by ComfyUI's own cache keys of the upstream nodes.
+        widgets = {k: v for k, v in kwargs.items() if isinstance(v, (str, int, float, bool)) or v is None}
+        h = hashlib.sha256((gallery or "").encode() + json.dumps(widgets, sort_keys=True).encode())
         for item in parse_gallery(gallery):
             try:
                 st = os.stat(resolve_path(item))
@@ -182,35 +223,60 @@ class H3ReferenceGallery:
         return h.hexdigest()
 
     def load(self, gallery, max_edge=1024, max_frames=240, video_start=0.0, video_seconds=15.0,
-             audio_source="auto"):
-        items = parse_gallery(gallery)
+             audio_source="auto", external_images=None, external_image_sequence=None,
+             external_video_with_audio=None):
         refs, lines, audio = [], [], None
-        first_video_path = first_video_trim = None
-        for item in items:
+        soundtracks = []  # video soundtracks in reference order, loaded only if needed
+
+        def add(t, text):
+            refs.append(t)
+            kind = "still" if t.shape[0] == 1 else f"{t.shape[0]} frames"
+            lines.append(f"#{len(refs):<3} {text} -> {kind} {tuple(t.shape[1:3])}{range_note(t)}")
+
+        # 1. Gallery cards, in card order.
+        for item in parse_gallery(gallery):
             path = resolve_path(item)
             start = float(video_start if item.get("start") is None else item["start"])
             seconds = float(video_seconds if item.get("seconds") is None else item["seconds"])
             if item["kind"] == "image":
-                refs.append(load_image(path, max_edge))
-                lines.append(f"image  {item['name']} -> {tuple(refs[-1].shape[1:3])}")
+                add(load_image(path, max_edge), f"gallery image  {item['name']}")
             elif item["kind"] == "video":
-                refs.append(load_video(path, max_frames, max_edge, start, seconds))
-                lines.append(f"video  {item['name']} -> {refs[-1].shape[0]} frames {tuple(refs[-1].shape[1:3])}")
-                if first_video_path is None:
-                    first_video_path, first_video_trim = path, (start, seconds)
+                add(load_video(path, max_frames, max_edge, start, seconds), f"gallery video  {item['name']}")
+                soundtracks.append((item["name"], lambda p=path, s=start, d=seconds: load_audio(p, s, d)))
             elif item["kind"] == "audio" and audio is None and audio_source in ("first audio file", "auto"):
                 # Audio files ignore the global video trim; only their own card trim applies.
                 audio = load_audio(path, float(item.get("start") or 0.0), float(item.get("seconds") or 0.0))
                 if audio is not None:
                     lines.append(f"audio  {item['name']} -> {audio['waveform'].shape[-1] / audio['sample_rate']:.1f}s")
-        if audio is None and first_video_path and audio_source in ("first video soundtrack", "auto"):
-            audio = load_audio(first_video_path, *first_video_trim)
+
+        # 2. External stills: one reference per batch item (views, no copy).
+        images = check_frames(external_images, "external_images")
+        if images is not None:
+            for i in range(images.shape[0]):
+                add(images[i:i + 1], f"external image {i + 1}/{images.shape[0]}")
+
+        # 3. External image sequence: one multi-frame reference, frame order kept.
+        sequence = check_frames(external_image_sequence, "external_image_sequence")
+        if sequence is not None:
+            add(sequence, "external image sequence")
+
+        # 4. External VIDEO: frames as one reference, soundtrack as an audio candidate.
+        if external_video_with_audio is not None:
+            parts = external_video_with_audio.get_components()
+            add(check_frames(parts.images, "external_video_with_audio"),
+                f"external video  {float(parts.frame_rate):.3g} fps")
+            if parts.audio is not None:
+                soundtracks.append(("external video", lambda a=parts.audio: a))
+
+        if audio is None and soundtracks and audio_source in ("first video soundtrack", "auto"):
+            name, get = soundtracks[0]
+            audio = get()
             if audio is not None:
-                lines.append(f"audio  soundtrack of {os.path.basename(first_video_path)} -> "
+                lines.append(f"audio  soundtrack of {name} -> "
                              f"{audio['waveform'].shape[-1] / audio['sample_rate']:.1f}s")
         if not refs and audio is None:
-            raise ValueError("H3 Reference Gallery is empty. Add photos, videos or audio first.")
-        summary = f"{len(refs)} visual refs, audio: {'yes' if audio else 'no'}\n" + "\n".join(lines)
+            raise ValueError("H3 Reference Gallery is empty. Add gallery cards or connect an external input.")
+        summary = f"{len(refs)} visual refs (order below), audio: {'yes' if audio else 'no'}\n" + "\n".join(lines)
         print("[H3 Reference Gallery] " + summary.replace("\n", "\n  "), flush=True)
         # Master treats an empty list as "no folder refs"; None audio leaves its audio branch off.
         return (refs or None, audio, len(refs), summary)
